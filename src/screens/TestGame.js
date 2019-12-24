@@ -21,7 +21,8 @@ const TestGame = () => {
             posY: 4.5 * unit,
             width: unit,
             height: unit,
-            hp: 3
+            maxHp: 3,
+            hp: 1
         }
         const map1 = {
             obstacles: [
@@ -67,6 +68,24 @@ const TestGame = () => {
             // Draw the player
             context.fillStyle = 'red'
             context.fillRect(player.posX, player.posY, player.width, player.height)
+            // Draw the hps
+            if (player.hp === player.maxHp) {
+                for (let i = 0; i < player.hp; i++) {
+                    context.fillStyle = 'red'
+                    context.fillRect((unit * 2 * i) + unit, unit, unit, unit)
+                }
+            }
+            else {
+                // Hps are lower than max hp
+                for (let i = 0; i < player.maxHp; i++) {
+                    context.fillStyle = 'brown'
+                    context.fillRect((unit * 2 * i) + unit, unit, unit, unit)
+                }
+                for (let i = 0; i < player.hp; i++) {
+                    context.fillStyle = 'red'
+                    context.fillRect((unit * 2 * i) + unit, unit, unit, unit)
+                }
+            }
         }
 
         /* Collisions */
@@ -160,7 +179,7 @@ const TestGame = () => {
                         context.fillStyle = 'black'
                         context.fillRect(0, canvas.height - 3 * unit, canvas.width, 3 * unit)
                         context.fillStyle = 'white'
-                        context.font = '30px fantasy'
+                        context.font = '20px fantasy'
                         context.fillText(`${map1.npc[i].name} : ${map1.npc[i].text}`, unit, canvas.height - unit)
                     }
                     else {
