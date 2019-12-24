@@ -22,7 +22,7 @@ const TestGame = () => {
             width: unit,
             height: unit,
             maxHp: 3,
-            hp: 1
+            hp: 2
         }
         const map1 = {
             obstacles: [
@@ -69,22 +69,14 @@ const TestGame = () => {
             context.fillStyle = 'red'
             context.fillRect(player.posX, player.posY, player.width, player.height)
             // Draw the hps
-            if (player.hp === player.maxHp) {
-                for (let i = 0; i < player.hp; i++) {
-                    context.fillStyle = 'red'
-                    context.fillRect((unit * 1.5 * i) + unit, unit, unit, unit)
-                }
+            // Hps are lower than max hp
+            for (let i = 0; i < player.maxHp; i++) {
+                context.fillStyle = 'brown'
+                context.fillRect((unit * 1.5 * i) + unit / 2, unit / 2, unit, unit)
             }
-            else {
-                // Hps are lower than max hp
-                for (let i = 0; i < player.maxHp; i++) {
-                    context.fillStyle = 'brown'
-                    context.fillRect((unit * 1.5 * i) + unit, unit, unit, unit)
-                }
-                for (let i = 0; i < player.hp; i++) {
-                    context.fillStyle = 'red'
-                    context.fillRect((unit * 1.5 * i) + unit, unit, unit, unit)
-                }
+            for (let i = 0; i < player.hp; i++) {
+                context.fillStyle = 'red'
+                context.fillRect((unit * 1.5 * i) + unit / 2, unit / 2, unit, unit)
             }
         }
 
