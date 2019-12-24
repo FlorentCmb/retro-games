@@ -1,0 +1,32 @@
+/* General */
+.Pong {
+    padding: 0;
+    background: grey;
+}
+
+/* Title */
+.Pong-Title {
+    background: black;
+    color: white;
+}
+.Pong-o {
+    color: red;
+}
+
+/* Canvas */
+#Pong-Canvas {
+    display: none;
+    margin: auto;
+}
+
+/* Start button */
+#Pong-Start {
+    display: block;
+    border: none;
+    width: 800px;
+    height: 500px;
+    margin: auto;
+    background: black;
+    font-size: 200%;
+    color: white;
+}

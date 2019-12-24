@@ -1,0 +1,31 @@
+/* General */
+.Snake {
+    padding: 0;
+    background: grey;
+}
+
+/* Title */
+.Snake-Title {
+    background: green;
+    color: white;
+}
+
+.Snake-s {
+    color: yellow;
+}
+
+/* Canvas */
+#Snake-Canvas {
+    display: none;
+    margin: auto;
+}
+
+#Snake-Start {
+    width: 640px;
+    height: 640px;
+    display: block;
+    margin: auto;
+    border: none;
+    font-size: 200%;
+    background: green;
+}
