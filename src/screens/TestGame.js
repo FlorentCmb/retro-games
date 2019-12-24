@@ -11,7 +11,7 @@ const TestGame = () => {
         const canvas = document.querySelector('#TestGame-Canvas')
         const context = canvas.getContext("2d")
 
-        /* Basics */
+        /* Basics settings */
         // Unit for the game (px)
         const unit = 32
         // Player object
@@ -21,8 +21,12 @@ const TestGame = () => {
             posY: 4.5 * unit,
             width: unit,
             height: unit,
-            maxHp: 3,
-            hp: 2
+            hp: 100,
+            attack: 25,
+            slotNb: 10,
+            inventory: {
+                weapon: "Silver Sword"
+            }
         }
         const map1 = {
             obstacles: [
@@ -43,8 +47,8 @@ const TestGame = () => {
             ]
         }
 
+        /* Render the game */
         const render = () => {
-            /* Render */
             // Clear the canvas
             context.clearRect(0, 0, canvas.width, canvas.height)
             // Draw the map
@@ -68,16 +72,6 @@ const TestGame = () => {
             // Draw the player
             context.fillStyle = 'red'
             context.fillRect(player.posX, player.posY, player.width, player.height)
-            // Draw the hps
-            // Hps are lower than max hp
-            for (let i = 0; i < player.maxHp; i++) {
-                context.fillStyle = 'brown'
-                context.fillRect((unit * 1.5 * i) + unit / 2, unit / 2, unit, unit)
-            }
-            for (let i = 0; i < player.hp; i++) {
-                context.fillStyle = 'red'
-                context.fillRect((unit * 1.5 * i) + unit / 2, unit / 2, unit, unit)
-            }
         }
 
         /* Collisions */
@@ -159,6 +153,7 @@ const TestGame = () => {
                     break
             }
         }
+
         /* Interaction */
         const interact = () => {
             // NPC interactions
@@ -168,8 +163,10 @@ const TestGame = () => {
                     if (player.movementAuth) {
                         player.movementAuth = false
                         clearInterval(start)
+                        // Text box
                         context.fillStyle = 'black'
                         context.fillRect(0, canvas.height - 3 * unit, canvas.width, 3 * unit)
+                        // Text
                         context.fillStyle = 'white'
                         context.font = '20px fantasy'
                         context.fillText(`${map1.npc[i].name} : ${map1.npc[i].text}`, unit, canvas.height - unit)
@@ -181,10 +178,35 @@ const TestGame = () => {
                 }
             }
         }
+
+        /* Display inventory */
+        const displayInventory = () => {
+            if (player.movementAuth) {
+                // Remove movement ability && current game
+                player.movementAuth = false
+                clearInterval(start)
+                // Inventory box
+                context.fillStyle = "grey"
+                context.fillRect(unit, unit, canvas.width / 2 - unit, canvas.height - 2 * unit)
+                // Inventory slots
+                console.log(Math.ceil(player.slotNb / 4))
+                for (let i = 0; i < player.nbSlot ; i++) {
+                    if (i < 4) {
+                        context.strokeStyle = "black"
+                        context.strokeRect(3 * unit + 2 * i * unit, 3 * unit, 2 * unit, 2 * unit)
+                    }
+                }
+            }
+            else {
+                start = setInterval(render, 10)
+                player.movementAuth = true
+            }
+        }
+
         /* Controls */
         const controls = (e) => {
             const pressedKey = e.keyCode
-            if ([37, 38, 39, 40, 69].includes(pressedKey)) {
+            if ([37, 38, 39, 40, 69, 9].includes(pressedKey)) {
                 e.preventDefault()
             }
             // If I press left arrow and there's no collision
@@ -205,6 +227,9 @@ const TestGame = () => {
             }
             else if (pressedKey === 69) {
                 interact()
+            }
+            else if (pressedKey === 9) {
+                displayInventory()
             }
         }
         // Will add keydown listener
