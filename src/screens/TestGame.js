@@ -72,18 +72,18 @@ const TestGame = () => {
             if (player.hp === player.maxHp) {
                 for (let i = 0; i < player.hp; i++) {
                     context.fillStyle = 'red'
-                    context.fillRect((unit * 2 * i) + unit, unit, unit, unit)
+                    context.fillRect((unit * 1.5 * i) + unit, unit, unit, unit)
                 }
             }
             else {
                 // Hps are lower than max hp
                 for (let i = 0; i < player.maxHp; i++) {
                     context.fillStyle = 'brown'
-                    context.fillRect((unit * 2 * i) + unit, unit, unit, unit)
+                    context.fillRect((unit * 1.5 * i) + unit, unit, unit, unit)
                 }
                 for (let i = 0; i < player.hp; i++) {
                     context.fillStyle = 'red'
-                    context.fillRect((unit * 2 * i) + unit, unit, unit, unit)
+                    context.fillRect((unit * 1.5 * i) + unit, unit, unit, unit)
                 }
             }
         }
