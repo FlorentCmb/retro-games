@@ -16,6 +16,7 @@ const TestGame = () => {
         const unit = 32
         // Player object
         const player = {
+            movementAuth: true,
             posX: 4.5 * unit,
             posY: 4.5 * unit,
             width: unit,
@@ -41,7 +42,7 @@ const TestGame = () => {
             ]
         }
 
-        const game = () => {
+        const render = () => {
             /* Render */
             // Clear the canvas
             context.clearRect(0, 0, canvas.width, canvas.height)
@@ -149,81 +150,57 @@ const TestGame = () => {
         }
         /* Interaction */
         const interact = () => {
+            // NPC interactions
             for (let i = 0; i < map1.npc.length; i++) {
-                // Right
-                if (((player.posX + player.width) === map1.npc[i].posX) && (player.posY < (map1.npc[i].posY + map1.npc[i].height)) && ((player.posY + player.height) > map1.npc[i].posY)) {
-                    clearInterval(start)
-                    context.fillStyle = 'black'
-                    context.fillRect(0, canvas.height - 3 * unit, canvas.width, 3 * unit)
-                    context.fillStyle = 'white'
-                    context.font = '30px fantasy'
-                    context.textAlign = 'left'
-                    context.fillText(`${map1.npc[i].name} : ${map1.npc[i].text}`, unit, canvas.height - unit)
-                    setTimeout(() => start = setInterval(game, 10), 1000)
-                }
-                // Left
-                else if ((player.posX === (map1.npc[i].posX + map1.npc[i].width)) && (player.posY < (map1.npc[i].posY + map1.npc[i].height)) && ((player.posY + player.height) > map1.npc[i].posY)) {
-                    clearInterval(start)
-                    context.fillStyle = 'black'
-                    context.fillRect(0, canvas.height - 3 * unit, canvas.width, 3 * unit)
-                    context.fillStyle = 'white'
-                    context.font = '30px fantasy'
-                    context.fillText(`${map1.npc[i].name} : ${map1.npc[i].text}`, unit, canvas.height - unit)
-                    setTimeout(() => start = setInterval(game, 10), 1000)
-                }
-                // Up
-                else if ((player.posY === (map1.npc[i].posY + map1.npc[i].height)) && (player.posX < (map1.npc[i].posX + map1.npc[i].width)) && ((player.posX + player.width) > map1.npc[i].posX)) {
-                    clearInterval(start)
-                    context.fillStyle = 'black'
-                    context.fillRect(0, canvas.height - 3 * unit, canvas.width, 3 * unit)
-                    context.fillStyle = 'white'
-                    context.font = '30px fantasy'
-                    context.fillText(`${map1.npc[i].name} : ${map1.npc[i].text}`, unit, canvas.height - unit)
-                    setTimeout(() => start = setInterval(game, 10), 1000)
-                }
-                // Down
-                else if (((player.posY + player.height) === map1.npc[i].posY) && (player.posX < (map1.npc[i].posX + map1.npc[i].width)) && ((player.posX + player.width) > map1.npc[i].posX)) {
-                    clearInterval(start)
-                    context.fillStyle = 'black'
-                    context.fillRect(0, canvas.height - 3 * unit, canvas.width, 3 * unit)
-                    context.fillStyle = 'white'
-                    context.font = '30px fantasy'
-                    context.fillText(`${map1.npc[i].name} : ${map1.npc[i].text}`, unit, canvas.height - unit)
-                    setTimeout(() => start = setInterval(game, 10), 1000)
+                // If there's a collision with a npc during interacton
+                if ((player.posY + player.height >= map1.npc[i].posY) && (player.posY <= map1.npc[i].posY + map1.npc[i].height) && (player.posX + player.width >= map1.npc[i].posX) && (player.posX <= map1.npc[i].posX + map1.npc[i].width)) {
+                    if (player.movementAuth) {
+                        player.movementAuth = false
+                        clearInterval(start)
+                        context.fillStyle = 'black'
+                        context.fillRect(0, canvas.height - 3 * unit, canvas.width, 3 * unit)
+                        context.fillStyle = 'white'
+                        context.font = '30px fantasy'
+                        context.fillText(`${map1.npc[i].name} : ${map1.npc[i].text}`, unit, canvas.height - unit)
+                    }
+                    else {
+                        start = setInterval(render, 10)
+                        player.movementAuth = true
+                    }
                 }
             }
         }
         /* Controls */
         const controls = (e) => {
             const pressedKey = e.keyCode
-            console.log(pressedKey)
             if ([37, 38, 39, 40, 69].includes(pressedKey)) {
                 e.preventDefault()
             }
             // If I press left arrow and there's no collision
-            if (pressedKey === 37 && !collision('left')) {
+            if (pressedKey === 37 && !collision('left') && player.movementAuth) {
                 player.posX -= unit / 2
             }
             // If I press right arrow and there's no collision
-            else if (pressedKey === 39 && !collision('right')) {
+            else if (pressedKey === 39 && !collision('right') && player.movementAuth) {
                 player.posX += unit / 2
             }
             // If I press down arrow and there's no collision
-            else if (pressedKey === 40 && !collision('down')) {
+            else if (pressedKey === 40 && !collision('down') && player.movementAuth) {
                 player.posY += unit / 2
             }
             // If I press up arrow and there's no collision
-            else if (pressedKey === 38 && !collision('up')) {
+            else if (pressedKey === 38 && !collision('up') && player.movementAuth) {
                 player.posY -= unit / 2
             }
             else if (pressedKey === 69) {
                 interact()
             }
         }
+        // Will add keydown listener
         document.addEventListener('keydown', controls)
 
         // Start the game
-        let start = setInterval(game, 10)
+        let start = setInterval(render, 10)
     }
 
     // Will do game function only when the component is done
