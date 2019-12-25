@@ -24,9 +24,11 @@ const TestGame = () => {
             hp: 100,
             attack: 25,
             slotNb: 10,
-            inventory: {
-                weapon: "Silver Sword"
-            }
+            inventory: [
+                {
+                    name: "Silver Sword"
+                }
+            ]
         }
         const map1 = {
             obstacles: [
@@ -188,12 +190,21 @@ const TestGame = () => {
                 // Inventory box
                 context.fillStyle = "grey"
                 context.fillRect(unit, unit, canvas.width / 2 - unit, canvas.height - 2 * unit)
+                // Inventory title
+                context.fillStyle = 'brown'
+                context.font = '30px fantasy'
+                context.fillText("Inventory", 2 * unit, 2 * unit)
                 // Inventory slots
-                console.log(Math.ceil(player.slotNb / 4))
-                for (let i = 0; i < player.nbSlot ; i++) {
-                    if (i < 4) {
-                        context.strokeStyle = "black"
-                        context.strokeRect(3 * unit + 2 * i * unit, 3 * unit, 2 * unit, 2 * unit)
+                let nbCol = 4
+                let nbRow = Math.ceil(player.slotNb / nbCol)
+                // Me.exe has ceased to function :
+                for (let i = 0; i < player.slotNb; i++) {
+                    for (let j = 0; j < nbRow; j++) {
+                        // If the current slot is between the current row * the current column
+                        if (i < nbCol * (j + 1) && i >= nbCol * j) {
+                            context.strokeStyle = "black"
+                            context.strokeRect(3 * unit + 3 * (i - (nbCol * j)) * unit, 3 * (j + 1) * unit, 2 * unit, 2 * unit)
+                        }
                     }
                 }
             }
