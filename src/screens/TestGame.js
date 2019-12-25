@@ -203,7 +203,13 @@ const TestGame = () => {
                         // If the current slot is between the current row * the current column
                         if (i < nbCol * (j + 1) && i >= nbCol * j) {
                             context.strokeStyle = "black"
-                            context.strokeRect(3 * unit + 3 * (i - (nbCol * j)) * unit, 3 * (j + 1) * unit, 2 * unit, 2 * unit)
+                            // "3 * unit" to create a margin, "3 * (i - (nbCol * j)) * unit" to create the space between the previous slot (I use j because I want all slots to be ordered, but if I don't reduce the i value, the slots will be further)
+                            let currentXPos = 3 * unit + 3 * (i - (nbCol * j)) * unit
+                            // Define the y pos of the slot according to its row
+                            let currentYPos = 3 * (j + 1) * unit
+                            // The slot is a square, so its width and height will be equal
+                            let slotDimension = 2 * unit
+                            context.strokeRect(currentXPos, currentYPos, slotDimension, slotDimension)
                         }
                     }
                 }
