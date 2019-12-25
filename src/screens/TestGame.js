@@ -26,7 +26,8 @@ const TestGame = () => {
             slotNb: 10,
             inventory: [
                 {
-                    name: "Silver Sword"
+                    name: "Silver Sword",
+                    img: 'https://pngimage.net/wp-content/uploads/2018/06/pixel-sword-png-8.png'
                 }
             ]
         }
@@ -211,11 +212,14 @@ const TestGame = () => {
                             // The slot is a square, so its width and height will be equal
                             let slotDimension = 2 * unit
                             context.strokeRect(currentXPos, currentYPos, slotDimension, slotDimension)
-
+                            
                             // Inventory items
                             if (player.inventory[i]) {
-                                console.log(`Object n°${i}`)
                                 // Write code which add something to the current slot if there's an object here
+                                const img = new Image()
+                                img.src = player.inventory[i].img
+                                console.log(player.inventory[i].img)
+                                context.drawImage(img, 0, 448, 2 * unit, 2 * unit, currentXPos, currentYPos, slotDimension, slotDimension)
                             }
                         }
                     }
