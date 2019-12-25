@@ -183,6 +183,7 @@ const TestGame = () => {
 
         /* Display inventory */
         const displayInventory = () => {
+            // If statement : if the player can move (so the inventory isn't displayed)
             if (player.movementAuth) {
                 // Remove movement ability && current game
                 player.movementAuth = false
@@ -194,7 +195,7 @@ const TestGame = () => {
                 context.fillStyle = 'brown'
                 context.font = '30px fantasy'
                 context.fillText("Inventory", 2 * unit, 2 * unit)
-                // Inventory slots
+                // Inventory slots (empty)
                 let nbCol = 4
                 let nbRow = Math.ceil(player.slotNb / nbCol)
                 // Me.exe has ceased to function :
@@ -213,7 +214,9 @@ const TestGame = () => {
                         }
                     }
                 }
+                //
             }
+            // Else statement : if we're already seeing inventory and we press "TAB" again
             else {
                 start = setInterval(render, 10)
                 player.movementAuth = true
