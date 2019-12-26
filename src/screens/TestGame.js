@@ -219,7 +219,7 @@ const TestGame = () => {
                                 const img = new Image()
                                 img.src = player.inventory[i].img
                                 console.log(player.inventory[i].img)
-                                context.drawImage(img, 0, 448, 2 * unit, 2 * unit, currentXPos, currentYPos, slotDimension, slotDimension)
+                                context.drawImage(img, 0, 0, 512, 512, currentXPos, currentYPos, slotDimension, slotDimension)
                             }
                         }
                     }
@@ -261,6 +261,7 @@ const TestGame = () => {
                 displayInventory()
             }
         }
+
         // Will add keydown listener
         document.addEventListener('keydown', controls)
 

@@ -6,6 +6,7 @@ import { Switch, Route } from 'react-router-dom'
 import Pong from './screens/Pong'
 import Snake from './screens/Snake'
 import TestGame from './screens/TestGame'
+import TestGame2 from './screens/TestGame2'
 import Header from './components/Header'
 
 // Import styles
@@ -23,8 +24,11 @@ const App = () => {
         <Route path="/snake">
           <Snake />
         </Route>
-        <Route path="/test">
+        <Route exact path="/test/1">
           <TestGame />
+        </Route>
+        <Route exact path="/test/2">
+          <TestGame2 />
         </Route>
       </Switch>
     </div>
