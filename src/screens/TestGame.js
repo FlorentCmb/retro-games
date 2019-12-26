@@ -33,9 +33,15 @@ const TestGame = () => {
                 },
                 {
                     name: "Wood Shield",
-                    img: "https://img.itch.zone/aW1hZ2UvMzIzODI2LzE1OTk1ODkucG5n/347x500/qjszdS.png",
-                    width: 347,
-                    height: 347
+                    img: "https://steemitimages.com/0x0/https://steemitimages.com/DQmS6PVxAy4Tu8XVU4Chk2qrgoX6EAq62w5fLjHhLpU52Kg/wooden_shield.png",
+                    width: 320,
+                    height: 320
+                },
+                {
+                    name: "Health Potion",
+                    img: "https://pbs.twimg.com/media/DsG77p_WoAAGCGp.png",
+                    width: 310,
+                    height: 310
                 }
             ]
         }
