@@ -14,6 +14,7 @@ const TestGame = () => {
         /* Basics settings */
         // Unit for the game (px)
         const unit = 32
+
         // Player object
         const player = {
             movementAuth: true,
@@ -256,21 +257,21 @@ const TestGame = () => {
                 player.posX -= unit / 2
             }
             // If I press right arrow and there's no collision
-            else if (pressedKey === 39 && !collision('right') && player.movementAuth) {
+            if (pressedKey === 39 && !collision('right') && player.movementAuth) {
                 player.posX += unit / 2
             }
             // If I press down arrow and there's no collision
-            else if (pressedKey === 40 && !collision('down') && player.movementAuth) {
+            if (pressedKey === 40 && !collision('down') && player.movementAuth) {
                 player.posY += unit / 2
             }
             // If I press up arrow and there's no collision
-            else if (pressedKey === 38 && !collision('up') && player.movementAuth) {
+            if (pressedKey === 38 && !collision('up') && player.movementAuth) {
                 player.posY -= unit / 2
             }
-            else if (pressedKey === 69) {
+            if (pressedKey === 69) {
                 interact()
             }
-            else if (pressedKey === 9) {
+            if (pressedKey === 9) {
                 displayInventory()
             }
         }
