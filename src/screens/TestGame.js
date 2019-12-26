@@ -226,7 +226,6 @@ const TestGame = () => {
                                 // Write code which add something to the current slot if there's an object here
                                 const img = new Image()
                                 img.src = player.inventory[i].img
-                                console.log(player.inventory[i].img)
                                 context.drawImage(img, 0, 0, player.inventory[i].width, player.inventory[i].height, currentXPos + 1, currentYPos + 1, slotDimension - 2, slotDimension - 2)
                             }
                         }
