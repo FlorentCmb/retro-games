@@ -27,7 +27,15 @@ const TestGame = () => {
             inventory: [
                 {
                     name: "Silver Sword",
-                    img: 'https://pngimage.net/wp-content/uploads/2018/06/pixel-sword-png-8.png'
+                    img: "https://pngimage.net/wp-content/uploads/2018/06/pixel-sword-png-8.png",
+                    width: 512,
+                    height: 512
+                },
+                {
+                    name: "Wood Shield",
+                    img: "https://img.itch.zone/aW1hZ2UvMzIzODI2LzE1OTk1ODkucG5n/347x500/qjszdS.png",
+                    width: 347,
+                    height: 347
                 }
             ]
         }
@@ -219,7 +227,7 @@ const TestGame = () => {
                                 const img = new Image()
                                 img.src = player.inventory[i].img
                                 console.log(player.inventory[i].img)
-                                context.drawImage(img, 0, 0, 512, 512, currentXPos, currentYPos, slotDimension, slotDimension)
+                                context.drawImage(img, 0, 0, player.inventory[i].width, player.inventory[i].height, currentXPos + 1, currentYPos + 1, slotDimension - 2, slotDimension - 2)
                             }
                         }
                     }
