@@ -13,36 +13,37 @@ const TestGame2 = () => {
         const context = canvas.getContext("2d")
         // Will be the interval
         let startRendering
+        let spawnAsteroids
         // Unit for the game
         const block = 32
         // To know if we can move the player
         let left = false
         let right = false
         let up = false
+        let down = false
+        let shoot = false
 
         /* Objects */
         // Player object
         const player = {
-            jumping: true,
             height: block,
             width: block,
             posX: canvas.width / 2 - block / 2,
             posY: 0,
             velocityX: 0,
-            velocityY: 0
+            velocityY: 0,
+            color: 'white',
+            maxLifes: 3,
+            lifes: 2
         }
-        // Obstacles
-        const obstacles = [
-            { posX: 0, posY: canvas.height - 2 * block, width: canvas.width, height: 2 * block, color: "chocolate", type: "ground" },
-            { posX: canvas.width / 2, posY: canvas.height - 6 * block, width: 4 * block, height: block, color: "chocolate", type:"ground" },
-            { posX: 6 * block, posY: canvas.height - 6 * block, width: 4 * block, height: 4 * block, color: "chocolate", type: "ground" }
-        ]
+        const missiles = []
+        const asteroidArray = []
 
         /* Controller */
         const controller = (e) => {
             // To know if we are currently pressing the key
             let keyState = e.type === "keydown" ? true : false
-            if ([37, 38, 39].includes(e.keyCode)) {
+            if ([37, 38, 39, 40, 32].includes(e.keyCode)) {
                 e.preventDefault()
             }
             // Change left, right or up values according to the pressed key
@@ -56,17 +57,38 @@ const TestGame2 = () => {
                 case 39:
                     right = keyState
                     break
+                case 40:
+                    down = keyState
+                    break
+                case 32:
+                    shoot = keyState
+                    break
                 default:
                     break
             }
         }
 
+        /* Asteroids */
+        const asteroids = () => {
+            asteroidArray.push({
+                posX: Math.floor(Math.random() * canvas.width),
+                posY: Math.floor(Math.random() * canvas.height),
+                velocityX: Math.floor(Math.random() * 4) - 2,
+                velocityY: Math.floor(Math.random() * 4) - 2,
+                dimensions: Math.floor(Math.random() * 3) * block,
+                color: 'white'
+            })
+        }
+
         /* Movements */
         const movements = () => {
-            // Jump
-            if (up && !player.jumping) {
-                player.velocityY -= 30
-                player.jumping = true
+            // Up
+            if (up) {
+                player.velocityY -= 0.5
+            }
+            // Down
+            if (down) {
+                player.velocityY += 0.5
             }
             // Left
             if (left) {
@@ -76,9 +98,18 @@ const TestGame2 = () => {
             if (right) {
                 player.velocityX += 0.5
             }
+            if (shoot) {
+                console.log("Shoot")
+                missiles.push({
+                    posX: player.posX + player.width / 2,
+                    posY: player.posY + player.height / 2,
+                    velocityX: (player.velocityX > 0.5 || player.velocityX < -0.5 ? Math.sign(player.velocityX) * 10 : 0),
+                    velocityY: (player.velocityY > 0.5 || player.velocityY < -0.5 ? Math.sign(player.velocityY) * 10 : 0)
+                })
+                console.log(player.velocityX, player.velocityY)
+                shoot = false
+            }
             /* Physics */
-            // Gravity
-            player.velocityY += 1
             // Position according to the current velocity
             player.posX += player.velocityX
             player.posY += player.velocityY
@@ -86,32 +117,60 @@ const TestGame2 = () => {
             player.velocityX *= 0.9
             player.velocityY *= 0.9
 
-            // Collisions
-            for (let i = 0; i < obstacles.length; i++) {
-                // Up collision
-                if (player.posY + player.height >= obstacles[i].posY && player.posY < obstacles[i].posY && player.posX + player.width > obstacles[i].posX && player.posX < obstacles[i].posX + obstacles[i].width) {
-                    player.posY = obstacles[i].posY - player.height
-                    player.velocityY = 0
-                    player.jumping = false
+            /* Inifinite map */
+            // For player
+            if (player.posX + player.width < 0) {
+                player.posX = canvas.width
+            }
+            else if (player.posX > canvas.width) {
+                player.posX = 0 - player.width
+            }
+            else if (player.posY > canvas.height) {
+                player.posY = 0
+            }
+            else if (player.posY + player.height < 0) {
+                player.posY = canvas.height - player.height
+            }
+            // For asteroids
+            for (let i = 0; i < asteroidArray.length; i++) {
+                if (asteroidArray[i].posX + asteroidArray[i].dimensions < 0) {
+                    asteroidArray[i].posX = canvas.width
                 }
-                // Down collision (if obstacle type is ground)
-                if (player.posY <= obstacles[i].posY + obstacles[i].height && player.posY + player.height > obstacles[i].posY + obstacles[i].height && player.posX + player.width > obstacles[i].posX && player.posX < obstacles[i].posX + obstacles[i].width && obstacles[i].type === "ground") {
-                    player.posY = obstacles[i].posY + obstacles[i].height
-                    player.velocityY = 0
-                    player.jumping = true
+                else if (asteroidArray[i].posX > canvas.width) {
+                    asteroidArray[i].posX = 0 - asteroidArray[i].dimensions
                 }
-                // Left side collision
-                if (player.posX <= obstacles[i].posX + obstacles[i].width && player.posX > obstacles[i].posX && player.posY < obstacles[i].posY + obstacles[i].height && player.posY + player.height > obstacles[i].posY) {
-                    player.posX = obstacles[i].posX + obstacles[i].width
-                    player.velocityX = 0
+                else if (asteroidArray[i].posY > canvas.height) {
+                    asteroidArray[i].posY = 0
                 }
-                // Right side collision
-                if (player.posX + player.width >= obstacles[i].posX && player.posX < obstacles[i].posX && player.posY < obstacles[i].posY + obstacles[i].height && player.posY + player.height > obstacles[i].posY) {
-                    player.posX = obstacles[i].posX - player.width
-                    player.velocityX = 0
+                else if (asteroidArray[i].posY + asteroidArray[i].height < 0) {
+                    asteroidArray[i].posY = canvas.height - asteroidArray[i].height
                 }
             }
-            
+
+            /* Missiles movements */
+            for (let i = 0; i < missiles.length; i++) {
+                missiles[i].posX += missiles[i].velocityX
+                missiles[i].posY += missiles[i].velocityY
+            }
+            // Missile removing
+            for (let i = 0; i < missiles.length; i++) {
+                if (missiles[i].posX > canvas.width || missiles[i].posX < 0 || missiles[i].posY > canvas.height || missiles[i].posY < 0) {
+                    // Index of the current missile
+                    const index = missiles.indexOf(missiles[i])
+                    missiles.splice(index, 1)
+                }
+                else if (missiles[i].velocityX === 0 && missiles[i].velocityY === 0) {
+                    // Index of the current missile
+                    const index = missiles.indexOf(missiles[i])
+                    missiles.splice(index, 1)
+                }
+            }
+
+            /* Asteroids movements */
+            for (let i = 0; i < asteroidArray.length; i++) {
+                asteroidArray[i].posX += asteroidArray[i].velocityX
+                asteroidArray[i].posY += asteroidArray[i].velocityY
+            }
         }
 
         /* Render the game */
@@ -119,19 +178,32 @@ const TestGame2 = () => {
             // Clear canvas
             context.clearRect(0, 0, canvas.width, canvas.height)
             // Background
-            context.fillStyle = "rgb(85, 129, 209)"
+            context.fillStyle = "rgb(0, 0, 0)"
             context.fillRect(0, 0, canvas.width, canvas.height)
-            // Ground
-            context.fillStyle = "chocolate"
-            context.fillRect(0, canvas.height - 2 * block, canvas.width, 2 * block)
-            // Obstacles
-            for (let i = 0; i < obstacles.length ; i++) {
-                context.fillStyle = obstacles[i].color
-                context.fillRect(obstacles[i].posX, obstacles[i].posY, obstacles[i].width, obstacles[i].height)
-            }
             // Player
-            context.fillStyle = "red"
+            context.fillStyle = player.color
             context.fillRect(player.posX, player.posY, player.width, player.height)
+            // Player HP
+            // Empty life slots
+            for (let i = 0; i < player.maxLifes; i++) {
+                context.fillStyle = 'brown'
+                context.fillRect(block + 2 * i * block, block, 1.5 * block, 1.5 * block)
+            }
+            // Full life slots (current hps)
+            for (let i = 0; i < player.lifes; i++) {
+                context.fillStyle = 'red'
+                context.fillRect(block + 2 * i * block, block, 1.5 * block, 1.5 * block)
+            }
+            // Missiles
+            for (let i = 0; i < missiles.length; i++) {
+                context.fillStyle = "white"
+                context.fillRect(missiles[i].posX, missiles[i].posY, 5, 5)
+            }
+            // Asteroids
+            for (let i = 0; i < asteroidArray.length; i++) {
+                context.fillStyle = asteroidArray[i].color
+                context.fillRect(asteroidArray[i].posX, asteroidArray[i].posY, asteroidArray[i].dimensions, asteroids.dimensions)
+            }
         }
 
         const movementsPerRender = () => {
@@ -141,6 +213,7 @@ const TestGame2 = () => {
 
         // Start to repeat the rendering function every 10ms
         startRendering = setInterval(movementsPerRender, 10)
+        spawnAsteroids = setInterval(asteroids, 5000)
 
         // Events listener
         document.addEventListener("keydown", controller)
