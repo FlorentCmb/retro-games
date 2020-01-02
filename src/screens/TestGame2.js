@@ -34,7 +34,8 @@ const TestGame2 = () => {
             velocityY: 0,
             color: 'white',
             maxLifes: 3,
-            lifes: 2
+            lifes: 3,
+            score: 0
         }
         const missiles = []
         const asteroidArray = []
@@ -78,6 +79,9 @@ const TestGame2 = () => {
                 dimensions: Math.floor(Math.random() * 3) * block,
                 color: 'white'
             })
+            for (let i = 0; i < asteroidArray.length; i++) {
+                asteroidArray[i].hp = asteroidArray[i].dimensions / block
+            }
         }
 
         /* Movements */
@@ -99,14 +103,12 @@ const TestGame2 = () => {
                 player.velocityX += 0.5
             }
             if (shoot) {
-                console.log("Shoot")
                 missiles.push({
                     posX: player.posX + player.width / 2,
                     posY: player.posY + player.height / 2,
                     velocityX: (player.velocityX > 0.5 || player.velocityX < -0.5 ? Math.sign(player.velocityX) * 10 : 0),
                     velocityY: (player.velocityY > 0.5 || player.velocityY < -0.5 ? Math.sign(player.velocityY) * 10 : 0)
                 })
-                console.log(player.velocityX, player.velocityY)
                 shoot = false
             }
             /* Physics */
@@ -134,10 +136,10 @@ const TestGame2 = () => {
             // For asteroids
             for (let i = 0; i < asteroidArray.length; i++) {
                 if (asteroidArray[i].posX + asteroidArray[i].dimensions < 0) {
-                    asteroidArray[i].posX = canvas.width
+                    asteroidArray[i].posX = canvas.width - asteroidArray[i].dimensions
                 }
                 else if (asteroidArray[i].posX > canvas.width) {
-                    asteroidArray[i].posX = 0 - asteroidArray[i].dimensions
+                    asteroidArray[i].posX = 0
                 }
                 else if (asteroidArray[i].posY > canvas.height) {
                     asteroidArray[i].posY = 0
@@ -165,11 +167,29 @@ const TestGame2 = () => {
                     missiles.splice(index, 1)
                 }
             }
+            // Missile collision
+            for (let i = 0; i < missiles.length; i++) {
+                for (let j = 0; j < asteroidArray.length; j++) {
+                    if (missiles.length > 0 && missiles[i].posX <= asteroidArray[j].posX + asteroidArray[j].dimensions && missiles[i].posX + 5 >= asteroidArray[j].posX && missiles[i].posY <= asteroidArray[j].posY + asteroidArray[j].dimensions && missiles[i].posY + 5 >= asteroidArray[j].posY) {
+                        player.score += 10
+                        asteroidArray[j].hp--
+                        missiles.splice(missiles.indexOf(missiles[i]), 1)
+                    }
+                }
+            }
 
-            /* Asteroids movements */
+
+            /* Asteroids movements, death and collision with player */
             for (let i = 0; i < asteroidArray.length; i++) {
                 asteroidArray[i].posX += asteroidArray[i].velocityX
                 asteroidArray[i].posY += asteroidArray[i].velocityY
+                if (asteroidArray[i].hp ===0) {
+                    const index = asteroidArray.indexOf(asteroidArray[i])
+                    asteroidArray.splice(index, 1)
+                }
+                if (asteroidArray.length > 0 && asteroidArray[i].posX <= player.posX + player.width && asteroidArray[i].posX + asteroidArray[i].dimensions >= player.posX && asteroidArray[i].posY <= player.posY + player.height && asteroidArray[i].posY + asteroidArray[i].dimensions >= player.posY) {
+                    player.lifes--
+                }
             }
         }
 
@@ -194,6 +214,9 @@ const TestGame2 = () => {
                 context.fillStyle = 'red'
                 context.fillRect(block + 2 * i * block, block, 1.5 * block, 1.5 * block)
             }
+            // Score
+            context.font = '40px serif'
+            context.fillText(player.score, 8 * block, 2 * block)
             // Missiles
             for (let i = 0; i < missiles.length; i++) {
                 context.fillStyle = "white"
@@ -202,7 +225,7 @@ const TestGame2 = () => {
             // Asteroids
             for (let i = 0; i < asteroidArray.length; i++) {
                 context.fillStyle = asteroidArray[i].color
-                context.fillRect(asteroidArray[i].posX, asteroidArray[i].posY, asteroidArray[i].dimensions, asteroids.dimensions)
+                context.fillRect(asteroidArray[i].posX, asteroidArray[i].posY, asteroidArray[i].dimensions, asteroidArray[i].dimensions)
             }
         }
 
